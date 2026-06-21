@@ -32,8 +32,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())       // Disable CSRF (not needed for REST APIs)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()  // Login & Register — public
-                        .anyRequest().authenticated()                 // Everything else — needs token
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No sessions — JWT handles state
