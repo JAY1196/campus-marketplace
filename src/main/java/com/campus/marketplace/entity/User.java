@@ -28,10 +28,17 @@ public class User {
     private String email;
 
     @NotBlank
-    private String password;  // stored as BCrypt hash — never plain text
+    private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;        // STUDENT or ADMIN
+    private Role role;
+
+    @Column(length = 500)
+    private String bio;
+
+    private String contactNumber;
+
+    private String avatarUrl;
 
     public enum Role {
         STUDENT, ADMIN

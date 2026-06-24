@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Marketplace API</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --velvet-wine:#260212;
+            --burgundy-stage:#4f0423;
+            --impossible-red:#e10600;
+            --blush-highlight:#ffc7c6;
+            --butcher-black:#000000;
+            --bone-white:#ffffff;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--velvet-wine);color:#fff;font-family:Inter,sans-serif}
+        .container{width:min(1200px,92%);margin:auto}
+
+        .hero{min-height:85vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:80px 0}
+        .eyebrow{color:var(--impossible-red);font-size:14px;text-transform:uppercase;letter-spacing:.18em;font-weight:700;margin-bottom:24px}
+        .hero-title{font-family:Anton,sans-serif;text-transform:uppercase;color:var(--impossible-red);line-height:.95;letter-spacing:.04em;font-size:clamp(3.2rem,9vw,7rem);margin-bottom:28px}
+        .hero-title span{display:block;margin-bottom:0.08em}
+        .hero-title span:last-child{margin-bottom:0}
+        .hero-desc{max-width:720px;margin:auto;color:var(--blush-highlight);font-size:18px;line-height:1.6}
+
+        .status{margin-top:32px;display:inline-flex;align-items:center;gap:10px;font-size:13px;text-transform:uppercase;letter-spacing:.12em;font-weight:600}
+        .status-dot{width:9px;height:9px;border-radius:50%;background:#c9a227;flex-shrink:0;box-shadow:0 0 0 0 rgba(201,162,39,.6);animation:pulse 2.2s infinite}
+        .status-dot.live{background:#4fd17a;box-shadow:0 0 0 0 rgba(79,209,122,.6)}
+        .status-dot.down{background:var(--impossible-red);animation:none;box-shadow:none}
+        @keyframes pulse{
+            0%{box-shadow:0 0 0 0 rgba(201,162,39,.5)}
+            70%{box-shadow:0 0 0 7px rgba(201,162,39,0)}
+            100%{box-shadow:0 0 0 0 rgba(201,162,39,0)}
+        }
+        @media (prefers-reduced-motion: reduce){ .status-dot{animation:none} }
+
+        .section{padding:72px 0}
+        .section-title{font-family:Anton,sans-serif;text-transform:uppercase;color:var(--impossible-red);font-size:clamp(2.6rem,6vw,5rem);margin-bottom:32px;line-height:.8}
+
+        .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+        .feature,.route,.chip,.link-card{background:var(--burgundy-stage);border:1px solid #000;transition:border-color .15s ease, transform .15s ease, background .15s ease}
+        .feature{padding:18px;border-radius:12px;font-weight:600}
+        .feature:hover{border-color:var(--impossible-red);transform:translateY(-2px)}
+
+        .links{display:grid;gap:18px}
+        .link-card{padding:22px;border-radius:12px;text-decoration:none;color:white;display:block}
+        .link-card:hover{border-color:var(--impossible-red);transform:translateX(4px);background:#5e0529}
+        .link-card:focus-visible{outline:2px solid var(--impossible-red);outline-offset:3px}
+        .link-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+        .cta{background:var(--impossible-red);padding:10px 16px;border-radius:15px;font-size:12px;text-transform:uppercase;font-weight:700;flex-shrink:0;transition:background .15s ease, transform .15s ease}
+        .link-card:hover .cta{background:var(--bone-white);color:var(--impossible-red);transform:scale(1.05)}
+        .link-desc{margin-top:10px;color:var(--blush-highlight)}
+
+        .routes{display:grid;gap:12px}
+        .route{padding:14px 18px;border-radius:12px;display:flex;gap:16px;align-items:center;font-family:'SF Mono','Consolas',monospace;font-size:14px}
+        .route:hover{border-color:var(--impossible-red)}
+        .method{min-width:70px;text-align:center;padding:8px 12px;border-radius:15px;font-size:12px;font-weight:700;font-family:Inter,sans-serif}
+        .post{background:var(--impossible-red)}
+        .get{background:#000}
+
+        .stack{display:flex;flex-wrap:wrap;gap:12px}
+        .chip{padding:10px 16px;border-radius:15px;color:var(--blush-highlight);font-size:14px}
+        .chip:hover{border-color:var(--impossible-red);color:#fff}
+
+        footer{text-align:center;padding:60px 0;color:var(--blush-highlight);font-size:14px}
+    </style>
+</head>
+<body>
+<section class="hero"><div class="container">
+    <div class="eyebrow">Now Posted</div>
+    <h1 class="hero-title">
+        <span>CAMPUS</span>
+        <span>MARKETPLACE</span>
+        <span>API</span>
+    </h1>
+    <p class="hero-desc">A backend for students to buy, sell, and browse within their own campus — accounts, listings, search, and seller profiles.</p>
+    <div class="status">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">checking the board…</span>
+    </div>
+</div></section>
+
+<section class="section"><div class="container">
+    <h2 class="section-title">What's on offer</h2>
+    <div class="features-grid">
+        <div class="feature">JWT authentication</div>
+        <div class="feature">Product listings</div>
+        <div class="feature">Search &amp; filters</div>
+        <div class="feature">Seller profiles</div>
+        <div class="feature">Pagination &amp; sorting</div>
+        <div class="feature">Role-based access</div>
+    </div></div></section>
+
+<section class="section"><div class="container">
+    <h2 class="section-title">Read the listing</h2>
+    <div class="links">
+        <a class="link-card" href="/swagger-ui/index.html">
+            <div class="link-top"><strong>Swagger UI</strong><span class="cta">Click me</span></div>
+            <div class="link-desc">try every endpoint, right from the browser</div>
+        </a>
+        <a class="link-card" href="https://github.com/" target="_blank" rel="noopener">
+            <div class="link-top"><strong>GitHub repository</strong><span class="cta">Click me</span></div>
+            <div class="link-desc">source, README, architecture notes</div>
+        </a>
+    </div></div></section>
+
+<section class="section"><div class="container">
+    <h2 class="section-title">A few routes to start with</h2>
+    <div class="routes">
+        <div class="route"><span class="method post">POST</span><span>/api/auth/register</span></div>
+        <div class="route"><span class="method post">POST</span><span>/api/auth/login</span></div>
+        <div class="route"><span class="method get">GET</span><span>/api/products</span></div>
+        <div class="route"><span class="method get">GET</span><span>/api/products/search</span></div>
+        <div class="route"><span class="method get">GET</span><span>/api/users/me</span></div>
+    </div></div></section>
+
+<section class="section"><div class="container">
+    <h2 class="section-title">Built with</h2>
+    <div class="stack">
+        <div class="chip">Java 21</div><div class="chip">Spring Boot</div><div class="chip">Spring Security</div>
+        <div class="chip">JWT</div><div class="chip">Hibernate / JPA</div><div class="chip">MySQL</div>
+        <div class="chip">Maven</div><div class="chip">Swagger / OpenAPI</div>
+    </div></div></section>
+
+<footer>Campus Marketplace API · v1.0</footer>
+
+<script>
+    // Pings a real public endpoint so this reflects actual API health, not a hardcoded claim.
+    (function () {
+        var dot = document.getElementById('status-dot');
+        var text = document.getElementById('status-text');
+
+        fetch('/api/products?page=0&size=1')
+            .then(function (res) {
+                if (res.ok) {
+                    dot.className = 'status-dot live';
+                    text.textContent = 'API is live and answering requests';
+                } else {
+                    throw new Error('bad status');
+                }
+            })
+            .catch(function () {
+                dot.className = 'status-dot down';
+                text.textContent = 'API did not respond — it may be waking up';
+            });
+    })();
+</script>
+</body></html>

@@ -2,6 +2,7 @@
 
 package com.campus.marketplace.service;
 
+import com.campus.marketplace.dto.ProductFilterRequest;
 import com.campus.marketplace.dto.ProductRequest;
 import com.campus.marketplace.dto.ProductResponse;
 import com.campus.marketplace.entity.Product;
@@ -9,7 +10,12 @@ import com.campus.marketplace.entity.User;
 import com.campus.marketplace.exception.ResourceNotFoundException;
 import com.campus.marketplace.repository.ProductRepository;
 import com.campus.marketplace.repository.UserRepository;
+import com.campus.marketplace.specification.ProductSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +72,27 @@ public class ProductService {
                 .stream()
                 .map(ProductResponse::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    // SEARCH WITH FILTERS + PAGINATION + SORTING
+    public Page<ProductResponse> searchProducts(ProductFilterRequest filter) {
+
+        Sort sort = filter.getSortDirection().equalsIgnoreCase("asc")
+                ? Sort.by(filter.getSortBy()).ascending()
+                : Sort.by(filter.getSortBy()).descending();
+
+        Pageable pageable = PageRequest.of(
+                filter.getPage(),
+                filter.getSize(),
+                sort
+        );
+
+        Page<Product> productPage = productRepository.findAll(
+                ProductSpecification.withFilters(filter),
+                pageable
+        );
+
+        return productPage.map(ProductResponse::fromEntity);
     }
 
     // UPDATE

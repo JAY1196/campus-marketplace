@@ -1,5 +1,3 @@
-// Path: src/main/java/com/campus/marketplace/entity/Product.java
-
 package com.campus.marketplace.entity;
 
 import jakarta.persistence.*;
@@ -33,6 +31,7 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Column(name = "product_condition")
     @Enumerated(EnumType.STRING)
     private Condition condition;
 
@@ -41,7 +40,6 @@ public class Product {
 
     private LocalDateTime createdAt;
 
-    // Foreign key — every product belongs to one seller (User)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
     private User seller;

@@ -2,11 +2,13 @@
 
 package com.campus.marketplace.controller;
 
+import com.campus.marketplace.dto.ProductFilterRequest;
 import com.campus.marketplace.dto.ProductRequest;
 import com.campus.marketplace.dto.ProductResponse;
 import com.campus.marketplace.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -27,50 +29,79 @@ public class ProductController {
             @Valid @RequestBody ProductRequest request,
             Authentication authentication) {
 
-        String sellerEmail = authentication.getName(); // comes from JWT via SecurityContext
+        String sellerEmail = authentication.getName();
         ProductResponse response = productService.createProduct(request, sellerEmail);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // GET /api/products — view all available listings (public)
+    // GET /api/products — view all available listings
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
-    // GET /api/products/{id} — view one listing
+    // GET /api/products/search
+    @GetMapping("/search")
+    public ResponseEntity<Page<ProductResponse>> searchProducts(
+            ProductFilterRequest filter) {
+
+        return ResponseEntity.ok(
+                productService.searchProducts(filter)
+        );
+    }
+
+    // GET /api/products/{id}
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
-    // GET /api/products/my-listings — logged-in user's own products
+    // GET /api/products/my-listings
     @GetMapping("/my-listings")
-    public ResponseEntity<List<ProductResponse>> getMyListings(Authentication authentication) {
-        return ResponseEntity.ok(productService.getMyListings(authentication.getName()));
+    public ResponseEntity<List<ProductResponse>> getMyListings(
+            Authentication authentication) {
+
+        return ResponseEntity.ok(
+                productService.getMyListings(authentication.getName())
+        );
     }
 
-    // PUT /api/products/{id} — edit a listing
+    // PUT /api/products/{id}
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable Long id,
             @Valid @RequestBody ProductRequest request,
             Authentication authentication) {
 
-        ProductResponse response = productService.updateProduct(id, request, authentication.getName());
+        ProductResponse response = productService.updateProduct(
+                id,
+                request,
+                authentication.getName()
+        );
+
         return ResponseEntity.ok(response);
     }
 
-    // DELETE /api/products/{id} — delete a listing
+    // DELETE /api/products/{id}
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<Void> deleteProduct(
+            @PathVariable Long id,
+            Authentication authentication) {
+
         productService.deleteProduct(id, authentication.getName());
+
         return ResponseEntity.noContent().build();
     }
 
-    // PATCH /api/products/{id}/sold — mark as sold
+    // PATCH /api/products/{id}/sold
     @PatchMapping("/{id}/sold")
-    public ResponseEntity<ProductResponse> markAsSold(@PathVariable Long id, Authentication authentication) {
-        return ResponseEntity.ok(productService.markAsSold(id, authentication.getName()));
+    public ResponseEntity<ProductResponse> markAsSold(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        return ResponseEntity.ok(
+                productService.markAsSold(id, authentication.getName())
+        );
     }
 }
