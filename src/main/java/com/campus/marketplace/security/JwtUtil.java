@@ -4,6 +4,7 @@ package com.campus.marketplace.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -12,8 +13,10 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // Secret key — in production, move this to application.properties
-    private static final String SECRET = "campus_marketplace_super_secret_key_2024_abcdefgh";
+    // Secret key loaded from application.properties / environment variable
+    @Value("${jwt.secret}")
+    private String SECRET;
+
     private static final long EXPIRY = 1000 * 60 * 60 * 24; // 24 hours in ms
 
     private Key getSigningKey() {
